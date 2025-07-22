@@ -19,23 +19,17 @@ pip install -r requirements.txt
 
 ### 2. Configure Environment
 
-Copy `.env.example` to `.env` and update the values:
-
-```bash
-cp .env.example .env
-```
-
-Update the `.env` file with your database credentials:
+The `.env` file is already configured with default values. Update if needed:
 
 ```bash
 # Database Configuration
-DATABASE_URL=postgresql://postgres:your_password@localhost:5432/le-db
+DATABASE_URL=postgresql://postgres:123456@localhost:5432/le-db
 
 # Redis Configuration  
 REDIS_URL=redis://localhost:6379/0
 
 # JWT Configuration
-JWT_SECRET_KEY=your-super-secret-jwt-key-change-this-in-production
+JWT_SECRET_KEY=your-super-secret-jwt-key-change-this-in-production-lc-workflow-2024
 JWT_ALGORITHM=HS256
 JWT_ACCESS_TOKEN_EXPIRE_MINUTES=60
 ```
@@ -181,25 +175,3 @@ backend/
 ├── test_auth.py       # Authentication tests
 └── requirements.txt   # Python dependencies
 ```
-
-## 🚀 Deployment
-
-### Using Docker
-
-```bash
-# Build and run with Docker Compose
-docker-compose up --build
-```
-
-### Environment Variables
-
-Make sure to set these environment variables in production:
-
-- `DATABASE_URL`: PostgreSQL connection string
-- `JWT_SECRET_KEY`: Strong secret key for JWT tokens
-- `ENVIRONMENT`: Set to "production"
-- `DEBUG`: Set to "false"
-
-## 📄 License
-
-This project is licensed under the MIT License.
