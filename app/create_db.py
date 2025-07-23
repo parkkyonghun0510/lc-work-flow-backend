@@ -1,5 +1,5 @@
 from .database import Base, engine
-from .models import user, branch, department, customer # Import all models to register them with Base.metadata
+from .models import user, branch, department, customer, loan # Import all models to register them with Base.metadata
 
 def create_db_tables():
     print("Creating database tables...")

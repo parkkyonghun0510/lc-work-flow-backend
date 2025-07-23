@@ -75,12 +75,70 @@ The setup script creates these test users:
 ### Authentication
 - `POST /api/auth/token` - Login (OAuth2 compatible)
 
+### Users Management
+- `GET /api/users/` - List users (with filters)
+- `POST /api/users/` - Create user
+- `GET /api/users/{id}` - Get user details
+- `PUT /api/users/{id}` - Update user
+- `DELETE /api/users/{id}` - Delete user
+- `POST /api/users/{id}/change-password` - Change user password
+
+### Branches Management
+- `GET /api/branches/` - List branches (with filters)
+- `POST /api/branches/` - Create branch
+- `GET /api/branches/{id}` - Get branch details
+- `PUT /api/branches/{id}` - Update branch
+- `DELETE /api/branches/{id}` - Delete branch
+- `GET /api/branches/active` - Get active branches
+
+### Departments Management
+- `GET /api/departments/` - List departments (with filters)
+- `POST /api/departments/` - Create department
+- `GET /api/departments/{id}` - Get department details
+- `PUT /api/departments/{id}` - Update department
+- `DELETE /api/departments/{id}` - Delete department
+- `GET /api/departments/active` - Get active departments
+
 ### Customers
 - `GET /api/customers/` - List customers
 - `POST /api/customers/` - Create customer
 - `GET /api/customers/{id}` - Get customer
 - `PUT /api/customers/{id}` - Update customer
 - `DELETE /api/customers/{id}` - Delete customer
+
+### Loan Applications
+- `GET /api/loan-applications/` - List loan applications (with filters)
+- `POST /api/loan-applications/` - Create loan application
+- `GET /api/loan-applications/{id}` - Get loan application details
+- `PUT /api/loan-applications/{id}` - Update loan application
+- `DELETE /api/loan-applications/{id}` - Delete loan application (draft only)
+- `PATCH /api/loan-applications/{id}/status` - Update application status
+- `PATCH /api/loan-applications/{id}/assign-officer` - Assign loan officer
+- `GET /api/loan-applications/stats/summary` - Get loan statistics
+
+### Loan Documents
+- `GET /api/loan-applications/{id}/documents` - Get loan documents
+- `POST /api/loan-applications/{id}/documents` - Upload loan document
+- `PATCH /api/loan-documents/{id}/verify` - Verify document
+- `DELETE /api/loan-documents/{id}` - Delete document
+
+### Loan Calculations
+- `POST /api/loan-calculations/emi` - Calculate EMI and loan schedule
+
+### File Upload
+- `POST /api/upload/id-card` - Upload ID card image
+- `POST /api/upload/document` - Upload general document
+- `POST /api/upload/multiple` - Upload multiple files
+- `GET /api/upload/download/{filename}` - Download file
+- `DELETE /api/upload/delete/{filename}` - Delete file
+- `GET /api/upload/info` - Get upload configuration
+
+### Health Checks
+- `GET /api/health/` - Basic health check
+- `GET /api/health/detailed` - Detailed health with metrics
+- `GET /api/health/database` - Database health check
+- `GET /api/health/ready` - Readiness probe
+- `GET /api/health/live` - Liveness probe
 
 ## 📖 API Documentation
 
