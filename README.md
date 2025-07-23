@@ -7,8 +7,9 @@ FastAPI backend for the LC Work Flow loan application system.
 ### Prerequisites
 
 1. **Python 3.9+** installed
-2. **PostgreSQL** database running
-3. **Redis** server running (optional, for caching)
+2. **PostgreSQL** database running (or use containerized version)
+3. **Redis** server running (optional, for caching, or use containerized version)
+4. **Docker** or **Podman** for containerized deployment
 
 ### 1. Install Dependencies
 
@@ -36,7 +37,7 @@ JWT_ACCESS_TOKEN_EXPIRE_MINUTES=60
 
 ### 3. Setup Database
 
-Run the setup script to create tables and test users:
+Run the setup script to create database tables and default users:
 
 ```bash
 python setup_backend.py
@@ -59,16 +60,24 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8000
 python test_auth.py
 ```
 
-## 📋 Test Users
+## 🧪 Test Users
 
-The setup script creates these test users:
+The system comes with the following default test users:
 
-| Username | Password | Role | Description |
-|----------|----------|------|-------------|
-| `admin` | `admin123` | Admin | Full system access |
-| `manager` | `manager123` | Manager | Management functions |
-| `officer` | `officer123` | Officer | Loan processing |
-| `testuser` | `testpassword` | Admin | Legacy test user |
+1. **Admin User**
+   - **Username**: admin
+   - **Password**: admin123
+   - **Role**: Admin
+
+2. **Test User**
+   - **Username**: testuser
+   - **Password**: testpassword
+   - **Role**: Manager
+
+3. **Loan Officer**
+   - **Username**: loanofficer
+   - **Password**: loan123
+   - **Role**: Loan Officer
 
 ## 🔗 API Endpoints
 
@@ -217,19 +226,100 @@ curl -X GET "http://localhost:8000/api/customers/" \
 2. Check JWT secret key in `.env`
 3. Ensure test users were created with `python setup_backend.py`
 
+## 🐋 Containerized Deployment
+
+### Using Docker
+
+To run the application using Docker:
+
+```bash
+# Build and start all services
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop all services
+docker-compose down
+```
+
+### Using Podman
+
+To run the application using Podman:
+
+1. **Setup Podman Environment**
+
+```bash
+# Make the setup script executable
+chmod +x podman-setup.sh
+
+# Run the setup script
+./podman-setup.sh
+```
+
+2. **Switch to Podman Configuration**
+
+```bash
+# Make the switch script executable
+chmod +x switch-config.sh
+
+# Switch to Podman configuration
+./switch-config.sh podman
+```
+
+3. **Start Services**
+
+```bash
+# Start all services
+./podman-start.sh
+
+# View logs
+./podman-logs.sh
+
+# Stop all services
+./podman-stop.sh
+```
+
+4. **Access the Application**
+
+Once the services are running, you can access:
+- API: http://localhost:8080
+- API Documentation: http://localhost:8080/docs
+
+5. **Switch Back to Local Configuration**
+
+If you need to switch back to local development:
+
+```bash
+./switch-config.sh local
+```
+
 ## 📁 Project Structure
 
 ```
 backend/
-├── app/
-│   ├── api/           # API endpoints
-│   ├── crud/          # Database operations
-│   ├── models/        # SQLAlchemy models
-│   ├── schemas/       # Pydantic schemas
-│   ├── auth_utils.py  # JWT utilities
-│   └── database.py    # Database configuration
-├── main.py            # FastAPI application
-├── setup_backend.py   # Database setup script
-├── test_auth.py       # Authentication tests
-└── requirements.txt   # Python dependencies
+├── app/                  # Application package
+│   ├── api/              # API endpoints
+│   ├── core/             # Core functionality
+│   ├── crud/             # CRUD operations
+│   ├── models/           # Database models
+│   ├── schemas/          # Pydantic schemas
+│   └── utils/            # Utility functions
+├── uploads/              # File uploads directory
+├── .env                  # Environment variables
+├── .env.example          # Example environment variables
+├── create_db.py          # Database creation script
+├── docker-compose.yml    # Docker Compose configuration
+├── Dockerfile            # Docker configuration
+├── main.py               # Application entry point
+├── podman-compose.yml    # Podman Compose configuration
+├── podman-logs.sh        # Script to view Podman logs
+├── podman-setup.sh       # Script to setup Podman environment
+├── podman-start.sh       # Script to start Podman services
+├── podman-stop.sh        # Script to stop Podman services
+├── README.md             # Project documentation
+├── requirements.txt      # Python dependencies
+├── setup_backend.py      # Database setup script
+├── switch-config.sh      # Script to switch between local and Podman configurations
+└── test_auth.py          # Authentication tests
 ```
