@@ -2,6 +2,19 @@
 
 FastAPI backend for the LC Work Flow loan application system.
 
+## 🚂 Railway Deployment
+
+This project is configured for deployment on Railway. See [RAILWAY_DEPLOYMENT.md](RAILWAY_DEPLOYMENT.md) for detailed instructions.
+
+**Quick Railway Deployment:**
+
+1. Push this repository to GitHub
+2. Connect your Railway account to GitHub
+3. Create a new project in Railway from your GitHub repository
+4. Add PostgreSQL and Redis services
+5. Set required environment variables
+6. Deploy!
+
 ## 🚀 Quick Setup
 
 ### Prerequisites
@@ -28,7 +41,21 @@ DATABASE_URL=postgresql://postgres:123456@localhost:5432/le-db
 
 # Redis Configuration  
 REDIS_URL=redis://localhost:6379/0
+```
 
+### 3. Run the Application
+
+You can run the application using the provided start script:
+
+```bash
+./start.sh
+```
+
+Or specify a custom port:
+
+```bash
+PORT=8080 ./start.sh
+```
 # JWT Configuration
 JWT_SECRET_KEY=your-super-secret-jwt-key-change-this-in-production-lc-workflow-2024
 JWT_ALGORITHM=HS256

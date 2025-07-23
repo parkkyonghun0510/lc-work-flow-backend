@@ -111,7 +111,9 @@ This guide will help you deploy the Loan Application Backend to Railway.
 
 3. **Port Binding Issues**
    - Railway automatically sets the PORT environment variable
-   - The application is configured to use `0.0.0.0:$PORT`
+   - The application is configured to use `0.0.0.0:${PORT:-8000}`
+   - If you encounter an error like `Invalid value for '--port': '$PORT' is not a valid integer`, it means the PORT variable is not being properly evaluated
+   - This has been fixed in the deployment configuration by using bash to evaluate the environment variable
 
 4. **Environment Variable Issues**
    - Double-check all required environment variables are set
