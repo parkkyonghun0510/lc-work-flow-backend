@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI
 from app.middleware import setup_middleware
 
@@ -32,3 +33,8 @@ app.include_router(department_api.router, prefix="/api", tags=["Departments"])
 app.include_router(upload_api.router, prefix="/api", tags=["File Upload"])
 app.include_router(health_api.router, prefix="/api", tags=["Health Check"])
 app.include_router(loan_api.router, prefix="/api", tags=["Loans"])
+
+if __name__ == "__main__":
+    import uvicorn
+    port = int(os.getenv("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)
