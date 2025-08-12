@@ -32,6 +32,10 @@ export default function FilesPage() {
   const [previewFile, setPreviewFile] = useState<File | null>(null);
   const [previewFiles, setPreviewFiles] = useState<File[]>([]);
   const [currentPreviewIndex, setCurrentPreviewIndex] = useState(0);
+  const [deleteFile, setDeleteFile] = useState<File | null>(null);
+
+  const deleteFileMutation = useDeleteFile();
+  const { downloadFile } = useDownloadFile();
 
   const { data: filesData, isLoading, error } = useFiles({
     application_id: selectedApplicationId || undefined,
@@ -58,6 +62,24 @@ export default function FilesPage() {
     setPreviewFile(file);
   };
 
+  const handleDownload = async (file: File) => {
+    try {
+      await downloadFile(file.id, file.original_filename);
+    } catch (error) {
+      console.error('Download failed:', error);
+    }
+  };
+
+  const handleDeleteConfirm = () => {
+    if (deleteFile) {
+      deleteFileMutation.mutate(deleteFile.id, {
+        onSuccess: () => {
+          setDeleteFile(null);
+        }
+      });
+    }
+  };
+
 
   return (
     <ProtectedRoute>
@@ -74,51 +96,46 @@ export default function FilesPage() {
                 <div className="flex items-center bg-gray-100 rounded-lg p-1">
                   <button
                     onClick={() => setViewMode('customers')}
-                    className={`px-3 py-1 text-sm rounded-md transition-colors ${
-                      viewMode === 'customers' 
-                        ? 'bg-white text-gray-900 shadow-sm' 
+                    className={`px-3 py-1 text-sm rounded-md transition-colors ${viewMode === 'customers'
+                        ? 'bg-white text-gray-900 shadow-sm'
                         : 'text-gray-600 hover:text-gray-900'
-                    }`}
+                      }`}
                   >
                     Customers
                   </button>
                   <button
                     onClick={() => setViewMode('folders')}
-                    className={`px-3 py-1 text-sm rounded-md transition-colors ${
-                      viewMode === 'folders' 
-                        ? 'bg-white text-gray-900 shadow-sm' 
+                    className={`px-3 py-1 text-sm rounded-md transition-colors ${viewMode === 'folders'
+                        ? 'bg-white text-gray-900 shadow-sm'
                         : 'text-gray-600 hover:text-gray-900'
-                    }`}
+                      }`}
                   >
                     Folders
                   </button>
                   <button
                     onClick={() => setViewMode('advanced')}
-                    className={`px-3 py-1 text-sm rounded-md transition-colors ${
-                      viewMode === 'advanced' 
-                        ? 'bg-white text-gray-900 shadow-sm' 
+                    className={`px-3 py-1 text-sm rounded-md transition-colors ${viewMode === 'advanced'
+                        ? 'bg-white text-gray-900 shadow-sm'
                         : 'text-gray-600 hover:text-gray-900'
-                    }`}
+                      }`}
                   >
                     Explorer
                   </button>
                   <button
                     onClick={() => setViewMode('explorer')}
-                    className={`px-3 py-1 text-sm rounded-md transition-colors ${
-                      viewMode === 'explorer' 
-                        ? 'bg-white text-gray-900 shadow-sm' 
+                    className={`px-3 py-1 text-sm rounded-md transition-colors ${viewMode === 'explorer'
+                        ? 'bg-white text-gray-900 shadow-sm'
                         : 'text-gray-600 hover:text-gray-900'
-                    }`}
+                      }`}
                   >
                     Simple
                   </button>
                   <button
                     onClick={() => setViewMode('table')}
-                    className={`px-3 py-1 text-sm rounded-md transition-colors ${
-                      viewMode === 'table' 
-                        ? 'bg-white text-gray-900 shadow-sm' 
+                    className={`px-3 py-1 text-sm rounded-md transition-colors ${viewMode === 'table'
+                        ? 'bg-white text-gray-900 shadow-sm'
                         : 'text-gray-600 hover:text-gray-900'
-                    }`}
+                      }`}
                   >
                     Table
                   </button>
@@ -161,6 +178,20 @@ export default function FilesPage() {
               </div>
             </div>
           </div>
+
+          {/* Error Display */}
+          {error && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+              <div className="flex">
+                <div className="ml-3">
+                  <h3 className="text-sm font-medium text-red-800">Error loading files</h3>
+                  <div className="mt-2 text-sm text-red-700">
+                    {error instanceof Error ? error.message : 'An unexpected error occurred'}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Files View */}
           {viewMode === 'customers' ? (
@@ -280,7 +311,7 @@ export default function FilesPage() {
                                   <EyeIcon className="h-4 w-4" />
                                 </button>
                                 <button
-                                  onClick={() => {}}
+                                  onClick={() => handleDownload(file)}
                                   className="text-blue-600 hover:text-blue-900 p-1"
                                   title="Download"
                                 >
@@ -288,7 +319,7 @@ export default function FilesPage() {
                                 </button>
                                 {(user?.role === 'admin' || file.uploaded_by === user?.id) && (
                                   <button
-                                    onClick={() => {}}
+                                    onClick={() => setDeleteFile(file)}
                                     className="text-red-600 hover:text-red-900 p-1"
                                     title="Delete"
                                   >
@@ -324,6 +355,20 @@ export default function FilesPage() {
             <FileUploadModal
               isOpen={showUploadModal}
               onClose={() => setShowUploadModal(false)}
+            />
+          )}
+
+          {/* Delete Confirmation */}
+          {deleteFile && (
+            <ConfirmDialog
+              isOpen={!!deleteFile}
+              onClose={() => setDeleteFile(null)}
+              onConfirm={handleDeleteConfirm}
+              title="Delete File"
+              message={`Are you sure you want to delete "${deleteFile.original_filename}"? This action cannot be undone.`}
+              confirmText="Delete"
+              cancelText="Cancel"
+              confirmButtonClass="bg-red-600 hover:bg-red-700"
             />
           )}
         </div>
