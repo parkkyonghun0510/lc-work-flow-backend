@@ -1,32 +1,12 @@
 [build]
-builder = "nixpacks"
+builder = "NIXPACKS"
 
 [deploy]
-startCommand = "bash -c 'uvicorn main:app --host 0.0.0.0 --port 8000'"
+# Next.js will listen on $PORT in production when using `next start`
+startCommand = "npm run start -- -p $PORT"
+healthcheckPath = "/"
+healthcheckTimeout = 300
 restartPolicyType = "ON_FAILURE"
-restartPolicyMaxRetries = 10
+restartPolicyMaxRetries = 3
 
-[environments.production]
-[environments.production.variables]
-ENVIRONMENT = "production"
-DEBUG = "false"
-LOG_LEVEL = "info"
-API_V1_STR = "/api/v1"
-PROJECT_NAME = "LC Work Flow API"
-JWT_ALGORITHM = "HS256"
-JWT_ACCESS_TOKEN_EXPIRE_MINUTES = "60"
-JWT_REFRESH_TOKEN_EXPIRE_DAYS = "30"
-UPLOAD_DIR = "./uploads"
-MAX_FILE_SIZE = "10485760"
 
-# Database and Redis URLs will be automatically provided by Railway services
-# DATABASE_URL will be set by Railway PostgreSQL service
-# REDIS_URL will be set by Railway Redis service
-# JWT_SECRET_KEY should be set manually in Railway dashboard for security
-
-[environments.production.services]
-[environments.production.services.postgres]
-template = "postgresql"
-
-[environments.production.services.redis]
-template = "redis"
