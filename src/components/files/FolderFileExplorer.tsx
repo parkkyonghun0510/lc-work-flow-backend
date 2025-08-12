@@ -214,7 +214,7 @@ export default function FolderFileExplorer({
     }
 
     // Sort items
-    items.sort((a, b) => {
+    items.sort((a: ExplorerItem, b: ExplorerItem) => {
       // Folders first
       if (a.type === 'folder' && b.type === 'file') return -1;
       if (a.type === 'file' && b.type === 'folder') return 1;
@@ -222,25 +222,24 @@ export default function FolderFileExplorer({
       let aValue: any, bValue: any;
 
       switch (sortField) {
-        case 'name':
-          aValue = a.name || (a as FileItem).original_filename;
-          bValue = b.name || (b as FileItem).original_filename;
-          aValue = aValue.toLowerCase();
-          bValue = bValue.toLowerCase();
+        case 'name': {
+          const aName = a.type === 'folder' ? (a as FolderItem).name : (a as FileItem).original_filename;
+          const bName = b.type === 'folder' ? (b as FolderItem).name : (b as FileItem).original_filename;
+          aValue = aName.toLowerCase();
+          bValue = bName.toLowerCase();
           break;
+        }
         case 'size':
-          if (a.type === 'folder') aValue = 0;
-          else aValue = (a as FileItem).file_size;
-          if (b.type === 'folder') bValue = 0;
-          else bValue = (b as FileItem).file_size;
+          aValue = a.type === 'folder' ? 0 : (a as FileItem).file_size;
+          bValue = b.type === 'folder' ? 0 : (b as FileItem).file_size;
           break;
         case 'type':
           aValue = a.type === 'folder' ? 'folder' : (a as FileItem).mime_type;
           bValue = b.type === 'folder' ? 'folder' : (b as FileItem).mime_type;
           break;
         case 'date':
-          aValue = new Date(a.created_at).getTime();
-          bValue = new Date(b.created_at).getTime();
+          aValue = new Date((a as any).created_at).getTime();
+          bValue = new Date((b as any).created_at).getTime();
           break;
         default:
           return 0;

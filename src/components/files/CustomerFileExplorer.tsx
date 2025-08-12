@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { useFiles, useDeleteFile, useDownloadFile, useCustomers, useApplicationsByCustomer, useApplications } from '@/hooks/useFiles';
+import { useFiles, useDeleteFile, useDownloadFile, useCustomers, useApplicationsByCustomer, useApplications, useApplicationFiles } from '@/hooks/useFiles';
 import { useFolders } from '@/hooks/useFolders';
 import { useAuth } from '@/hooks/useAuth';
 import { File, User, CustomerApplication } from '@/types/models';
@@ -104,7 +104,7 @@ export default function CustomerFileExplorer({
 
   // Real data: customers and applications with file counts
   const { data: customersData, isLoading: isLoadingCustomers } = useCustomers({ page: 1, size: 100 });
-  const { data: applicationsList = [], isLoading: isLoadingApplications } = useCustomerApplications(currentCustomerId || '');
+  const { data: applicationsList = [], isLoading: isLoadingApplications } = useApplicationsByCustomer(currentCustomerId || '');
   const { data: foldersData = [], isLoading: isLoadingFolders } = useFolders({
     application_id: currentApplicationId,
     parent_id: effectiveFolderId,

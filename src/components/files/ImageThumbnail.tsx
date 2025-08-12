@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { File } from '@/types/models';
 import { PhotoIcon, DocumentIcon, MusicalNoteIcon, FilmIcon, CodeBracketIcon, TableCellsIcon } from '@heroicons/react/24/outline';
-import { apiClient } from '@/lib/api';
 import { useFileThumbnail } from '@/hooks/useFiles';
 
 interface ImageThumbnailProps {
@@ -30,14 +29,22 @@ export default function ImageThumbnail({
     lg: 'w-32 h-32'
   };
 
-  // Use the new thumbnail hook
-  const thumbnailSize = size === 'sm' ? 64 : size === 'md' ? 96 : 128;
-  const { data: thumbnailUrl, isLoading: isThumbnailLoading } = useFileThumbnail(file.id, thumbnailSize);
+  // Use the new thumbnail hook (returns { thumbnailUrl })
+  const { thumbnailUrl } = useFileThumbnail(file.id, size);
   
   useEffect(() => {
-    setIsLoading(isThumbnailLoading);
-    setHasError(!thumbnailUrl && !isThumbnailLoading);
-  }, [thumbnailUrl, isThumbnailLoading]);
+    // Start in loading state for images until the <img> onLoad fires
+    if (!file.mime_type.startsWith('image/')) {
+      setIsLoading(false);
+      setHasError(false);
+    } else {
+      // If there's no thumbnail URL available, stop loading and show icon fallback
+      if (!thumbnailUrl) {
+        setIsLoading(false);
+        setHasError(true);
+      }
+    }
+  }, [file.mime_type, thumbnailUrl]);
   
   const getFileIcon = () => {
     const mimeType = file.mime_type.toLowerCase();

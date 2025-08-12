@@ -23,6 +23,9 @@ export interface User extends BaseModel {
   status: 'active' | 'inactive';
   department_id?: string;
   branch_id?: string;
+  // Optional expanded relations (when included by backend)
+  department?: Department | null;
+  branch?: Branch | null;
   // Position relations
   position_id?: string | null;
   position?: Position | null;

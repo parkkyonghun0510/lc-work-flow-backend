@@ -324,7 +324,7 @@ export const useDownloadFile = () => {
   return {
     downloadFile: async (id: string, filename: string) => {
       try {
-        const response = await apiClient.get(`/files/${id}/download`);
+        const response = await apiClient.get<{ download_url: string }>(`/files/${id}/download`);
         const { download_url } = response;
         
         if (download_url) {

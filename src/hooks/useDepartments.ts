@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '@/lib/api';
-import { Department, DepartmentWithRelations, PaginatedResponse } from '@/types/models';
+import { Department, DepartmentWithRelations, PaginatedResponse, User } from '@/types/models';
 import toast from 'react-hot-toast';
 import { isValidUUID, validateUUID } from '@/lib/utils';
 
@@ -157,16 +157,16 @@ export const useDepartmentWithRelations = (id: string) => {
           const statsResponse = await apiClient.get(`/departments/${id}/stats`);
           
           // Fetch users of department
-          const usersResponse = await apiClient.get(`/departments/${id}/users`);
+          const usersResponse = await apiClient.get<User[]>(`/departments/${id}/users`);
 
           // Create extended department object
           const departmentWithRelations: DepartmentWithRelations = {
             ...departmentResponse,
-            users: usersResponse || [],
+            users: Array.isArray(usersResponse) ? usersResponse : [],
             branches: [], // We'll implement branches later if needed
             user_count: (statsResponse as any)?.user_count || 0,
             branch_count: (statsResponse as any)?.branch_count || 0,
-            active_user_count: (usersResponse as any)?.filter((user: any) => user.status === 'active')?.length || 0,
+            active_user_count: Array.isArray(usersResponse) ? usersResponse.filter((user: any) => user.status === 'active')?.length : 0,
           };
 
           return departmentWithRelations;
